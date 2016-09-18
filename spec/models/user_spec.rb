@@ -13,4 +13,12 @@ RSpec.describe User do
   describe '@initials' do
     it { is_expected.to validate_presence_of(:initials) }
   end
+
+  describe '@memberships' do
+    it { is_expected.to have_many(:memberships) }
+  end
+
+  describe '@lists' do
+    it { is_expected.to have_many(:lists) }
+  end
 end
