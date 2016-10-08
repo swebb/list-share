@@ -1,5 +1,6 @@
 class List < ApplicationRecord
   has_many :memberships
+  has_many :items, dependent: :destroy
 
   validates :name, presence: true
   validates :memberships, presence: true

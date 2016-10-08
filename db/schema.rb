@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160918065437) do
+ActiveRecord::Schema.define(version: 20161008040400) do
+
+  create_table "items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "list_id",                                  null: false
+    t.string   "name",                                     null: false
+    t.boolean  "completed",                default: false, null: false
+    t.boolean  "starred",                  default: false, null: false
+    t.integer  "priority",                 default: 0,     null: false
+    t.date     "due_date"
+    t.text     "notes",      limit: 65535
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.index ["list_id"], name: "index_items_on_list_id", using: :btree
+  end
 
   create_table "lists", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name",       null: false
@@ -35,6 +48,7 @@ ActiveRecord::Schema.define(version: 20160918065437) do
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
   end
 
+  add_foreign_key "items", "lists"
   add_foreign_key "memberships", "lists"
   add_foreign_key "memberships", "users"
 end
