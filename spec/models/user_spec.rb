@@ -19,6 +19,10 @@ RSpec.describe User do
   end
 
   describe '@lists' do
-    it { is_expected.to have_many(:lists) }
+    it { is_expected.to have_many(:lists).through(:memberships) }
+  end
+
+  describe '@items' do
+    it { is_expected.to have_many(:items).through(:lists) }
   end
 end
