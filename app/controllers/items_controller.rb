@@ -10,7 +10,7 @@ class ItemsController < ApplicationController
   end
 
   def update
-    item = current_user.items.find(params[:id])
+    item = find_item
     if item.update_attributes item_params
       render json: item, status: 200
     else
@@ -18,7 +18,21 @@ class ItemsController < ApplicationController
     end
   end
 
+  def destroy
+    item = find_item
+
+    if item.destroy
+      render json: item, status: 200
+    else
+      render json: { errors: item.errors }, status: 422
+    end
+  end
+
   private
+
+  def find_item
+    current_user.items.find(params[:id])
+  end
 
   def item_params
     params.require(:item).permit(:name, :completed, :starred, :priority, :due_date, :notes)
