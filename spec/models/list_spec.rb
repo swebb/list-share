@@ -40,4 +40,30 @@ RSpec.describe List do
 
     specify { expect(user.lists).to include list }
   end
+
+  describe "remove_user" do
+    subject(:remove_user) { list.remove_user user }
+
+    let(:list) { FactoryGirl.create :list }
+    let(:membership) { list.memberships.first }
+    let(:user) { membership.user }
+
+    context "list has only 1 user " do
+      it "removes the membership and list" do
+        remove_user
+        expect(Membership.exists?(membership.id)).to eq false
+        expect(List.exists?(list.id)).to eq false
+      end
+    end
+
+    context "list has multiple users" do
+      before { FactoryGirl.create :membership, list: list }
+
+      it "only removes the membership" do
+        remove_user
+        expect(Membership.exists?(membership.id)).to eq false
+        expect(List.exists?(list.id)).to eq true
+      end
+    end
+  end
 end

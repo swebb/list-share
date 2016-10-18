@@ -18,12 +18,11 @@ class ListsController < ApplicationController
   end
 
   def destroy
-    membership = current_user.memberships.find_by_list_id(params[:id])
     list = find_list
-    if membership.destroy && (Membership.exists?(list_id: params[:id]) || list.destroy)
+    if list.remove_user(current_user)
       render json: list, status: 200
     else
-      render json: { errors: list.errors }, status: 422
+      render json: { "error" => "could not remove user" }, status: 422
     end
   end
 

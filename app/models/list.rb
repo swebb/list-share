@@ -15,4 +15,8 @@ class List < ApplicationRecord
   def add_user(user)
     memberships.create user: user
   end
+
+  def remove_user(user)
+    memberships.find_by_user_id(user.id).destroy && (Membership.exists?(list_id: id) || destroy)
+  end
 end
