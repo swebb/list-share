@@ -11,4 +11,8 @@ class List < ApplicationRecord
       list.save
     end
   end
+
+  def add_user(user)
+    memberships.create user: user
+  end
 end

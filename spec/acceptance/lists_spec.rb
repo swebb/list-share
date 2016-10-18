@@ -78,34 +78,34 @@ RSpec.resource "List" do
   end
 
   resource "Item" do
-    parameter :name, "Name of the item", required: true, scope: :item
-    parameter :completed, "Has the item been completed?", required: false, scope: :item
-    parameter :starred, "Is the item starred?", required: false, scope: :item
-    parameter :priority, "Priority of the item", required: false, scope: :item
-    parameter :due_date, "When is the item due", required: false, scope: :item
-    parameter :notes, "Additional notes about the item", required: false, scope: :item
-
-    let(:list) { List.create_for user, with: { name: "Groceries" } }
-    let(:list_id) { list.id }
-    let(:name) { "Milk" }
-    let(:completed) { false }
-    let(:starred) { false }
-    let(:priority) { 1 }
-    let(:due_date) { Date.today }
-    let(:notes) { "For my tea" }
-    let(:expected_response) do
-      a_hash_including({
-        "id" => Integer,
-        "name" => "Milk",
-        "completed" => false,
-        "starred" => false,
-        "priority" => 1,
-        "due_date" => Date.today.to_s,
-        "notes" => "For my tea"
-      })
-    end
-
     post "/lists/:list_id/items" do
+      parameter :name, "Name of the item", required: true, scope: :item
+      parameter :completed, "Has the item been completed?", required: false, scope: :item
+      parameter :starred, "Is the item starred?", required: false, scope: :item
+      parameter :priority, "Priority of the item", required: false, scope: :item
+      parameter :due_date, "When is the item due", required: false, scope: :item
+      parameter :notes, "Additional notes about the item", required: false, scope: :item
+
+      let(:list) { List.create_for user, with: { name: "Groceries" } }
+      let(:list_id) { list.id }
+      let(:name) { "Milk" }
+      let(:completed) { false }
+      let(:starred) { false }
+      let(:priority) { 1 }
+      let(:due_date) { Date.today }
+      let(:notes) { "For my tea" }
+      let(:expected_response) do
+        a_hash_including({
+          "id" => Integer,
+          "name" => "Milk",
+          "completed" => false,
+          "starred" => false,
+          "priority" => 1,
+          "due_date" => Date.today.to_s,
+          "notes" => "For my tea"
+        })
+      end
+
       example "Creating an item" do
         do_request
 
@@ -115,6 +115,27 @@ RSpec.resource "List" do
         list.reload
         expect(list.items.count).to eq 1
         expect(list.items.first.name).to eq name
+      end
+    end
+  end
+
+  resource "Collaborators" do
+    post "/lists/:list_id/collaborators" do
+      parameter :id, "ID or email of the collaborator to add", required: true, scope: :list
+
+      let(:id) { nil }
+      let(:list) { List.create_for user, with: { name: "Groceries" } }
+      let(:list_id) { list.id }
+
+      let(:expected_response) { { "result" => "success" } }
+
+      example "Adding a collaborator by id" do
+        collaborator = FactoryGirl.create :user
+        do_request(id: collaborator.id)
+
+        expect(status).to eq 201
+
+        expect(JSON.parse(response_body)).to match expected_response
       end
     end
   end

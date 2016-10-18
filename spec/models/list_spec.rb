@@ -29,4 +29,15 @@ RSpec.describe List do
     specify { expect(list.memberships.count).to eq 1 }
     specify { expect(list.memberships.first.user).to eq user }
   end
+
+  describe "#add_user" do
+    subject(:add_user) { list.add_user user }
+
+    let(:list) { FactoryGirl.create :list }
+    let(:user) { FactoryGirl.create :user }
+
+    before { add_user }
+
+    specify { expect(user.lists).to include list }
+  end
 end
