@@ -127,12 +127,21 @@ RSpec.resource "List" do
       parameter :id, "ID or email of the collaborator to add", required: true, scope: :list
 
       let(:id) { nil }
+      let(:collaborator) { FactoryGirl.create :user }
 
       let(:expected_response) { { "result" => "success" } }
 
       example "Adding a collaborator by id" do
-        collaborator = FactoryGirl.create :user
         do_request(id: collaborator.id)
+
+        expect(status).to eq 201
+
+        expect(JSON.parse(response_body)).to match expected_response
+        expect(Membership.where(user_id: collaborator.id, list_id: list.id)).to exist
+      end
+
+      example "Adding a collaborator by email" do
+        do_request(id: collaborator.email)
 
         expect(status).to eq 201
 
