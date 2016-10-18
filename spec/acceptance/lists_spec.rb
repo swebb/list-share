@@ -120,12 +120,13 @@ RSpec.resource "List" do
   end
 
   resource "Collaborators" do
+    let(:list) { List.create_for user, with: { name: "Groceries" } }
+    let(:list_id) { list.id }
+
     post "/lists/:list_id/collaborators" do
       parameter :id, "ID or email of the collaborator to add", required: true, scope: :list
 
       let(:id) { nil }
-      let(:list) { List.create_for user, with: { name: "Groceries" } }
-      let(:list_id) { list.id }
 
       let(:expected_response) { { "result" => "success" } }
 
@@ -136,6 +137,25 @@ RSpec.resource "List" do
         expect(status).to eq 201
 
         expect(JSON.parse(response_body)).to match expected_response
+        expect(Membership.where(user_id: collaborator.id, list_id: list.id)).to exist
+      end
+    end
+
+    delete "/lists/:list_id/collaborators/:id" do
+      parameter :id, "ID of the collaborator to remove", required: true, scope: :list
+
+      let(:id) { collaborator.id }
+      let(:collaborator) { FactoryGirl.create(:membership, list: list).user }
+
+      let(:expected_response) { { "result" => "success" } }
+
+      example "Removing a collaborator" do
+        do_request
+
+        expect(status).to eq 200
+
+        expect(JSON.parse(response_body)).to match expected_response
+        expect(Membership.where(user_id: collaborator.id, list_id: list.id)).to_not exist
       end
     end
   end

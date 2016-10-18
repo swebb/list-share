@@ -14,6 +14,10 @@ RSpec.describe List do
     end
   end
 
+  describe "@users" do
+    it { is_expected.to have_many(:users).through(:memberships) }
+  end
+
   describe "@items" do
     it { is_expected.to have_many(:items).dependent(:destroy) }
   end
