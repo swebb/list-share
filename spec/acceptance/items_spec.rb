@@ -24,6 +24,7 @@ RSpec.resource "List" do
     parameter :priority, "Priority of the item", required: false, scope: :item
     parameter :due_date, "When is the item due", required: false, scope: :item
     parameter :notes, "Additional notes about the item", required: false, scope: :item
+    parameter :user_id, "ID of the user this item is assigned to. Must be a member of the list.", required: false, scope: :item
 
     let(:name) { "Green Apples" }
     let(:completed) { true }
@@ -31,6 +32,7 @@ RSpec.resource "List" do
     let(:priority) { 1 }
     let(:due_date) { Date.tomorrow }
     let(:notes) { "For pie" }
+    let(:user_id) { user.id }
 
     let(:expected_response) do
       a_hash_including({
@@ -40,7 +42,8 @@ RSpec.resource "List" do
         "starred" => true,
         "priority" => 1,
         "due_date" => Date.tomorrow.to_s,
-        "notes" => "For pie"
+        "notes" => "For pie",
+        "user_id" => user.id
       })
     end
 
