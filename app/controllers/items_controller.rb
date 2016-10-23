@@ -35,6 +35,6 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :completed, :starred, :priority, :due_date, :notes, :user_id)
+    params.require(:item).permit(%i(name completed starred priority due_date notes user_id))
   end
 end

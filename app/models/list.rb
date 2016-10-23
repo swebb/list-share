@@ -18,6 +18,24 @@ class List < ApplicationRecord
   end
 
   def remove_user(user)
-    memberships.find_by_user_id(user.id).destroy && (Membership.exists?(list_id: id) || destroy)
+    remove_membership(user) &&
+      unassign_user(user) &&
+      remove_empty_list
+  end
+
+  private
+
+  def remove_membership(user)
+    memberships.find_by_user_id(user.id).destroy
+  end
+
+  def unassign_user(user)
+    items.where(user_id: user.id).each do |item|
+      item.update_attributes user: nil
+    end
+  end
+
+  def remove_empty_list
+    Membership.exists?(list_id: id) || destroy
   end
 end

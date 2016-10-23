@@ -32,7 +32,6 @@ RSpec.resource "List" do
     let(:priority) { 1 }
     let(:due_date) { Date.tomorrow }
     let(:notes) { "For pie" }
-    let(:user_id) { user.id }
 
     let(:expected_response) do
       a_hash_including({
@@ -42,8 +41,7 @@ RSpec.resource "List" do
         "starred" => true,
         "priority" => 1,
         "due_date" => Date.tomorrow.to_s,
-        "notes" => "For pie",
-        "user_id" => user.id
+        "notes" => "For pie"
       })
     end
 

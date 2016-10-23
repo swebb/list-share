@@ -68,6 +68,15 @@ RSpec.describe List do
         expect(Membership.exists?(membership.id)).to eq false
         expect(List.exists?(list.id)).to eq true
       end
+
+      context "user is assigned to an item" do
+        let!(:item) { Item.create name: "Apples", list: list, user: user }
+
+        it "removes the user from the item" do
+          remove_user
+          expect(item.reload.user).to eq nil
+        end
+      end
     end
   end
 end

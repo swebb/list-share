@@ -155,6 +155,7 @@ RSpec.resource "List" do
 
       let(:id) { collaborator.id }
       let(:collaborator) { FactoryGirl.create(:membership, list: list).user }
+      let!(:item) { Item.create name: "Apples", list: list, user: collaborator }
 
       let(:expected_response) { { "result" => "success" } }
 
@@ -165,6 +166,7 @@ RSpec.resource "List" do
 
         expect(JSON.parse(response_body)).to match expected_response
         expect(Membership.where(user_id: collaborator.id, list_id: list.id)).to_not exist
+        expect(item.reload.user).to eq nil
       end
     end
   end
