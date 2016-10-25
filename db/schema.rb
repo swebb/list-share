@@ -12,36 +12,39 @@
 
 ActiveRecord::Schema.define(version: 20161008040400) do
 
-  create_table "items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "list_id",                                  null: false
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "items", force: :cascade do |t|
+    t.integer  "list_id",                    null: false
     t.integer  "user_id"
-    t.string   "name",                                     null: false
-    t.boolean  "completed",                default: false, null: false
-    t.boolean  "starred",                  default: false, null: false
-    t.integer  "priority",                 default: 0,     null: false
+    t.string   "name",                       null: false
+    t.boolean  "completed",  default: false, null: false
+    t.boolean  "starred",    default: false, null: false
+    t.integer  "priority",   default: 0,     null: false
     t.date     "due_date"
-    t.text     "notes",      limit: 65535
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.text     "notes"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.index ["list_id"], name: "index_items_on_list_id", using: :btree
     t.index ["user_id"], name: "index_items_on_user_id", using: :btree
   end
 
-  create_table "lists", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "lists", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_lists_on_name", using: :btree
   end
 
-  create_table "memberships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "memberships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "list_id", null: false
     t.index ["list_id"], name: "index_memberships_on_list_id", using: :btree
     t.index ["user_id"], name: "index_memberships_on_user_id", using: :btree
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "email",      null: false
     t.string   "name",       null: false
     t.string   "initials",   null: false
