@@ -18,8 +18,8 @@ class List < ApplicationRecord
   end
 
   def remove_user(user)
-    remove_membership(user) &&
-      unassign_user(user) &&
+    unassign_user(user) &&
+      remove_membership(user) &&
       remove_empty_list
   end
 

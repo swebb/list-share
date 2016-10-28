@@ -11,6 +11,22 @@ RSpec.describe Item do
   describe "@user" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to_not validate_presence_of(:user) }
+
+    describe "foreign keys" do
+      it "cannot be assigned to a user who is not a member of the list" do
+        item = FactoryGirl.create :item
+        item.user = FactoryGirl.create :user
+        expect { item.save }.to raise_error ActiveRecord::InvalidForeignKey
+      end
+
+      it "cannot remove a user from a list if the user has assigned items" do
+        list = FactoryGirl.create :list
+        user = FactoryGirl.create :user
+        membership = Membership.create user: user, list: list
+        item = FactoryGirl.create :item, list: list, user: user
+        expect { membership.destroy }.to raise_error ActiveRecord::InvalidForeignKey
+      end
+    end
   end
 
   describe "@name" do
